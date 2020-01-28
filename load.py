@@ -14,18 +14,16 @@ def csv_to_dict(file):
     with open(file) as csvfile:
         print("Opening " + file + "...")
         reader = csv.DictReader(csvfile)
-        index = next(reader)
+        index = reader.fieldnames
         print("Columns: ", index)
         for row in reader:
             data = {}
             for col in index:
                 data[col] = row[col]
+                if col == 'User':
+                    data[col] = int(data[col])
             
-            # data['owner'] = row['owner']
-            # data['tags'] = row['tags']
-            # data['users'] = row['users']
-            # data['projectid'] = row['projectid']
-            # data['url'] = row['url']
+
             items.append(data)
 
     # Replace empty string values with None type

@@ -5,7 +5,7 @@ import os
 table_names = ['dev-csv2ddb-media', 'dev-csv2ddb-project', 'dev-csv2ddb-profile']
 primary_keys = ['owner', 'projectid', 'handle']
 sort_keys = ['url', 'name', 'User']
-sort_key_types = ['S', 'S', 'S']
+sort_key_types = ['S', 'S', 'N']
 
 def create_ddb_table(table_name, primary_key, sort_key, sort_key_type): 
 
