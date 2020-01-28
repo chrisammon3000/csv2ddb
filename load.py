@@ -1,11 +1,12 @@
-# import dependencies - boto3
 import boto3
 import csv
 import os
 import time
 
+# File paths of csvs from Google sheets
 files = ['./data/media.csv', './data/project.csv', './data/profile.csv']
 
+# Order table names in same order as filepaths
 table_names = ['dev-csv2ddb-media', 'dev-csv2ddb-project', 'dev-csv2ddb-profile']
 
 # load csv into dictionary
@@ -18,12 +19,13 @@ def csv_to_dict(file):
         print("Columns: ", index)
         for row in reader:
             data = {}
+            
+            # Change User to integer type
             for col in index:
                 data[col] = row[col]
                 if col == 'User':
                     data[col] = int(data[col])
-            
-
+        
             items.append(data)
 
     # Replace empty string values with None type
@@ -31,21 +33,13 @@ def csv_to_dict(file):
         for key, value in row.items():
             if value == '':
                 row[key] = None
-    
-    #print(items)
 
     return items
 
 
 def dict_to_dynamodb(items, table_name):
     
-    ACCESS_KEY_ID = os.environ['ACCESS_KEY_ID']
-    SECRET_ACCESS_KEY = os.environ['SECRET_ACCESS_KEY']
-    
-    session = boto3.Session(
-        aws_access_key_id=ACCESS_KEY_ID, 
-        aws_secret_access_key=SECRET_ACCESS_KEY
-    )
+    session = boto3.Session()
     print("Created session...")
 
     dynamodb = session.resource('dynamodb')
@@ -57,8 +51,6 @@ def dict_to_dynamodb(items, table_name):
         for item in items:
             print(item)
             batch.put_item(Item=item)
-            #print("Item printed:")
-            #print(item)
 
     return print(table_name + " has been loaded.")
 
