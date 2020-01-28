@@ -4,10 +4,10 @@ import os
 import time
 
 # File paths of csvs from Google sheets
-files = ['./data/media.csv', './data/project.csv', './data/profile.csv']
+files = ['./data/media.csv', './data/profile.csv', './data/project.csv']
 
 # Order table names in same order as filepaths
-table_names = ['dev-csv2ddb-media', 'dev-csv2ddb-project', 'dev-csv2ddb-profile']
+table_names = ['dev-csv2ddb-media', 'dev-csv2ddb-profile', 'dev-csv2ddb-project']
 
 # load csv into dictionary
 def csv_to_dict(file):
