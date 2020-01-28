@@ -1,4 +1,4 @@
-# Project Title
+# csv2ddb
 
 Scripts that load data from local csv files to AWS DynamoDB.
 
