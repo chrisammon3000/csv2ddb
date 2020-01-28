@@ -16,9 +16,8 @@ def csv_to_dict(file):
             data['projectid'] = row['projectid']
             data['url'] = row['url']
             items.append(data)
-        #print(items)
 
-    # Replace empty string values
+    # Replace empty string values with None type
     for row in items:
         for key, value in row.items():
             if value == '':
@@ -29,7 +28,7 @@ def csv_to_dict(file):
 
 
 
-def dict_to_dynamodb(items):
+def dict_to_dynamodb(items, tableName):
     
     ACCESS_KEY_ID = os.environ['ACCESS_KEY_ID']
     SECRET_ACCESS_KEY = os.environ['SECRET_ACCESS_KEY']
@@ -41,7 +40,7 @@ def dict_to_dynamodb(items):
     print("Created session...")
 
     dynamodb = session.resource('dynamodb')
-    db = dynamodb.Table('python-dynamodb-load-media')
+    db = dynamodb.Table(tableName)
     print("Connected to DynamoDB...")
 
     with db.batch_writer() as batch:
@@ -52,4 +51,4 @@ def dict_to_dynamodb(items):
 
 if __name__ == '__main__':
     data = csv_to_dict('./data/media.csv')
-    dict_to_dynamodb(data)
+    dict_to_dynamodb(data, 'python-dynamodb-load-media')
