@@ -20,9 +20,9 @@ Requires Python 3, Boto3 and the AWS CLI client.
 
 ## Authors
 
-* **Gregory Lindsey** - *Initial work* - [gclindsey](https://github.com/gclindsey)
+* **Gregory Lindsey** - [gclindsey](https://github.com/gclindsey)
 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License.
