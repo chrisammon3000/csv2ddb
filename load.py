@@ -2,19 +2,30 @@
 import boto3
 import csv
 import os
+import time
+
+files = ['./data/media.csv', './data/project.csv', './data/profile.csv']
+
+table_names = ['dev-csv2ddb-media', 'dev-csv2ddb-project', 'dev-csv2ddb-profile']
 
 # load csv into dictionary
 def csv_to_dict(file):
     items = []
     with open(file) as csvfile:
+        print("Opening " + file + "...")
         reader = csv.DictReader(csvfile)
+        index = next(reader)
+        print("Columns: ", index)
         for row in reader:
             data = {}
-            data['owner'] = row['owner']
-            data['tags'] = row['tags']
-            data['users'] = row['users']
-            data['projectid'] = row['projectid']
-            data['url'] = row['url']
+            for col in index:
+                data[col] = row[col]
+            
+            # data['owner'] = row['owner']
+            # data['tags'] = row['tags']
+            # data['users'] = row['users']
+            # data['projectid'] = row['projectid']
+            # data['url'] = row['url']
             items.append(data)
 
     # Replace empty string values with None type
@@ -22,13 +33,13 @@ def csv_to_dict(file):
         for key, value in row.items():
             if value == '':
                 row[key] = None
-                print(key, value)
+    
+    #print(items)
 
     return items
 
 
-
-def dict_to_dynamodb(items, tableName):
+def dict_to_dynamodb(items, table_name):
     
     ACCESS_KEY_ID = os.environ['ACCESS_KEY_ID']
     SECRET_ACCESS_KEY = os.environ['SECRET_ACCESS_KEY']
@@ -40,15 +51,21 @@ def dict_to_dynamodb(items, tableName):
     print("Created session...")
 
     dynamodb = session.resource('dynamodb')
-    db = dynamodb.Table(tableName)
-    print("Connected to DynamoDB...")
+    db = dynamodb.Table(table_name)
+    print("Loading " + table_name + "...")
+    print(db.key_schema)
 
     with db.batch_writer() as batch:
         for item in items:
-            batch.put_item(Item=item)
-            print("item printed:")
             print(item)
+            batch.put_item(Item=item)
+            #print("Item printed:")
+            #print(item)
+
+    return print(table_name + " has been loaded.")
 
 if __name__ == '__main__':
-    data = csv_to_dict('./data/media.csv')
-    dict_to_dynamodb(data, 'python-dynamodb-load-media')
+    for file, table_name in zip(files, table_names):
+        data = csv_to_dict(file)
+        dict_to_dynamodb(data, table_name)
+        
