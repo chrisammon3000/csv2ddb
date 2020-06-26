@@ -55,7 +55,7 @@ def dict_to_dynamodb(items, table_name):
     return print(table_name + " has been loaded.")
 
 if __name__ == '__main__':
-    for file, table_name in zip(files, table_names):
-        data = csv_to_dict(file)
-        dict_to_dynamodb(data, table_name)
+    # for file, table_name in zip(files, table_names):
+    #     data = csv_to_dict(file)
+    #     dict_to_dynamodb(data, table_name)
         
