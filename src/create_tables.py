@@ -1,4 +1,3 @@
-# import dependencies - boto3
 import boto3
 import os
 
@@ -52,7 +51,7 @@ def create_ddb_table(table_name, primary_key, sort_key, sort_key_type):
 
 
 if __name__ == '__main__':
-    # for table_name, primary_key, sort_key, sort_key_type in zip(table_names, primary_keys, sort_keys, sort_key_types):
-    #     #print(table_name)
-    #     create_ddb_table(table_name, primary_key, sort_key, sort_key_type)
+    for table_name, primary_key, sort_key, sort_key_type in zip(table_names, primary_keys, sort_keys, sort_key_types):
+        #print(table_name)
+        create_ddb_table(table_name, primary_key, sort_key, sort_key_type)
 
