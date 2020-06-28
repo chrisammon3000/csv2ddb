@@ -4,14 +4,16 @@ import csv
 
 @click.group()
 def cli():
+    """Load csv files directly into AWS DynamoDB."""
     pass
 
 @cli.command()
-@click.option("--table-name", required=True, type=click.STRING)
-@click.option("--primary-key", required=True, type=click.STRING)
-@click.option("--primary-key-type", required=True, default='S', show_default=True, type=click.STRING)
-@click.option("--sort-key", required=True, type=click.STRING)
-@click.option("--sort-key-type", required=True, type=click.STRING)
+@click.option("--table-name", required=True, type=click.STRING, help="Name of DynamoDB table")
+@click.option("--primary-key", required=True, type=click.STRING, help="Primary key")
+@click.option("--primary-key-type", default='S', show_default=True, 
+                                    type=click.STRING, help="S or N")
+@click.option("--sort-key", required=True, type=click.STRING, help="Sort key")
+@click.option("--sort-key-type", required=True, type=click.STRING, help="S or N")
 def table(table_name, primary_key, primary_key_type, sort_key, sort_key_type): 
 
     dynamodb_client = boto3.client('dynamodb')
@@ -51,8 +53,8 @@ def table(table_name, primary_key, primary_key_type, sort_key, sort_key_type):
         click.echo(f"Table {table_name} already exists.")
 
 @cli.command()
-@click.argument("files", nargs=-1) # type=click.File("rb"), nargs=-1
-@click.option("--table-name", required=True, type=click.STRING)
+@click.argument("files", nargs=-1, help="Path to csv files") # type=click.File("rb"), nargs=-1
+@click.option("--table-name", required=True, type=click.STRING, help="Name of DynamoDB table")
 def load(files, table_name):
     click.echo(files)
 
