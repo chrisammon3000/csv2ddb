@@ -43,7 +43,7 @@ This project is licensed under the MIT License.
 [issues-shield]: https://img.shields.io/github/issues/gclindsey/csv2ddb.svg?style=flat-square
 [issues-url]: https://github.com/gclindsey/csv2ddb/issues
 [license-shield]: https://img.shields.io/github/license/gclindsey/csv2ddb.svg?style=flat-square
-[license-url]: https://github.com/gclindsey/csv2ddb/blob/master/LICENSE.txt
+[license-url]: https://github.com/gclindsey/csv2ddb/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/gregory-lindsey/
 [product-screenshot]: images/screenshot.png
