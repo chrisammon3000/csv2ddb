@@ -2,7 +2,8 @@ from setuptools import setup
 
 setup(
     name='csv2ddb',
-    version='0.1',
+    author='Gregory Lindsey',
+    version='1.0',
     py_modules=['csv2ddb'],
     install_requires=[
         'Click',
@@ -13,4 +14,5 @@ setup(
         [console_scripts]
         csv2ddb=csv2ddb:cli
     ''',
+    license="MIT"
 )
