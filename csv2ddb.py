@@ -17,7 +17,7 @@ def cli():
 @click.option("--partition-key-type", default='S', show_default=True, 
                                     type=click.STRING, help="S or N")
 @click.option("--sort-key", required=True, type=click.STRING, help="Sort key") # make sort key optional
-@click.option("--sort-key-type", default='S', required=True, type=click.STRING, help="S or N") # make sort key optional
+@click.option("--sort-key-type", default='S', show_default=True, type=click.STRING, help="S or N") # make sort key optional
 def table(table_name, partition_key, partition_key_type, sort_key, sort_key_type): 
     """Create a DynamoDB table."""
 
