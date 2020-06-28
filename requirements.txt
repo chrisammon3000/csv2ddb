@@ -3,7 +3,7 @@ boto3==1.14.12
 botocore==1.17.12
 click==7.1.2
 colorama==0.4.3
--e git+https://github.com/gclindsey/python-dynamodb-load.git@d36e3faa261f7b12125d6387743b96aeeca28d61#egg=csv2ddb
+-e git+https://github.com/gclindsey/python-dynamodb-load.git@a4ca63916c936d3da9b6810d8ca3a0c9e77e822f#egg=csv2ddb
 docutils==0.15.2
 jmespath==0.10.0
 pyasn1==0.4.8
@@ -13,4 +13,3 @@ rsa==3.4.2
 s3transfer==0.3.3
 six==1.15.0
 urllib3==1.25.9
-yourscript==0.1
