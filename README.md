@@ -1,18 +1,19 @@
 # csv2ddb
 
-Scripts that load data from local csv files to AWS DynamoDB.
+Command line tool for easy loading of CSV files directly into AWS DynamoDB.
 
 ## Getting Started
 
-* Login to Google Sheets and download a separate CSV for each sheet in the document. Save these with the correct name in the correct order, for example:
+Be sure to configure your AWS client:
+```
+aws configure
+```
+Install `csv2ddb`:
 
-``` files = ['./data/media.csv', './data/profile.csv', './data/project.csv'] ```
-
-* Run `aws configure` and input the correct credentials
-
-* Run *create_tables.py* to create the tables
-
-* Run *load.py* to load the CSV data into DynamoDB
+```
+pip install csv2ddb
+csv2ddb --help
+```
 
 ### Prerequisites
 
@@ -21,7 +22,6 @@ Requires Python 3, Boto3 and the AWS CLI client.
 ## Authors
 
 * **Gregory Lindsey** - [gclindsey](https://github.com/gclindsey)
-
 
 ## License
 
