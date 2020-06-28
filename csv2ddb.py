@@ -7,19 +7,17 @@ def cli():
     pass
 
 @cli.command()
-@click.option("--table-name", required=True, type=click.STRING) # type=click.File("rb"), nargs=-1
+@click.option("--table-name", required=True, type=click.STRING)
 @click.option("--primary-key", required=True, type=click.STRING)
+@click.option("--primary-key-type", required=True, default='S', show_default=True, type=click.STRING)
 @click.option("--sort-key", required=True, type=click.STRING)
 @click.option("--sort-key-type", required=True, type=click.STRING)
-def table(table_name, primary_key, sort_key, sort_key_type): 
+def table(table_name, primary_key, primary_key_type, sort_key, sort_key_type): 
 
     dynamodb_client = boto3.client('dynamodb')
     existing_tables = dynamodb_client.list_tables()['TableNames']
 
     if table_name not in existing_tables:
-        # print("Creating Table: " + table_name + " ...")
-        # print("Primary key: " + primary_key)
-        # print("Sort key: " + sort_key)
 
         response = dynamodb_client.create_table(
             TableName=table_name,
@@ -36,7 +34,7 @@ def table(table_name, primary_key, sort_key, sort_key_type):
             AttributeDefinitions=[
                 {
                     'AttributeName': primary_key,
-                    'AttributeType': 'S'
+                    'AttributeType': primary_key_type # update to arg
                 },
                 {
                     'AttributeName': sort_key,
@@ -54,10 +52,10 @@ def table(table_name, primary_key, sort_key, sort_key_type):
 
 
 @cli.command()
-@click.argument("filename", nargs=1)
+@click.argument("files", nargs=-1) # type=click.File("rb"), nargs=-1
 @click.option("--table-name", required=True, type=click.STRING)
-def load(filename, table_name):
-    click.echo(filename)
+def load(files, table_name):
+    click.echo(files)
 
     def csv_to_dict(filename):
         items = []
@@ -68,13 +66,11 @@ def load(filename, table_name):
             print("Columns: ", index)
             for row in reader:
                 data = {}
-                
                 # Change User to integer type
                 for col in index:
                     data[col] = row[col]
-                    if col == 'User':
-                        data[col] = int(data[col])
-            
+                    # if col == 'User':
+                    #     data[col] = int(data[col])
                 items.append(data)
 
         # Replace empty string values with None type
@@ -95,12 +91,17 @@ def load(filename, table_name):
         print("Loading " + table_name + "...")
         print(db.key_schema)
 
-        with db.batch_writer() as batch:
-            for item in items:
-                #print(item)
-                batch.put_item(Item=item)
+        try:
+            with db.batch_writer() as batch:
+                for item in items:
+                    batch.put_item(Item=item)
+            click.echo(f"{table_name} has been loaded.")
+        except Exception as e:
+            click.echo(f"Error: {e}")
 
-        return print(table_name + " has been loaded.")
-
-    items = csv_to_dict(filename)
-    dict_to_dynamodb(items, table_name)
+    for filename in files:
+        try:
+            items = csv_to_dict(filename)
+            dict_to_dynamodb(items, table_name)
+        except Exception as e:
+            click.echo(f"Error: {e}")
