@@ -37,7 +37,6 @@ Requires Python 3, Boto3 and the AWS CLI client.
 See the [open issues](https://github.com/gclindsey/csv2ddb/issues) for a list of proposed features (and known issues).
 
 
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
@@ -65,7 +64,7 @@ This project is licensed under the MIT License.
 [stars-url]: https://github.com/gclindsey/csv2ddb/stargazers
 [issues-shield]: https://img.shields.io/github/issues/gclindsey/csv2ddb.svg?style=flat-square
 [issues-url]: https://github.com/gclindsey/csv2ddb/issues
-[license-shield]: https://img.shields.io/github/license/gclindsey/csv2ddb.svg?style=flat-square
+[license-shield]: https://img.shields.io/github/license/gclindsey/csv2ddb.svg
 [license-url]: https://github.com/gclindsey/csv2ddb/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/gregory-lindsey/
