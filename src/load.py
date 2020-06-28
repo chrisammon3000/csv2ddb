@@ -4,7 +4,7 @@ import os
 import time
 
 # File paths of csvs from Google sheets
-files = ['./data/media.csv', './data/profile.csv', './data/project.csv']
+files = ['../data/media.csv', '../data/profile.csv', '../data/project.csv']
 
 # Order table names in same order as filepaths
 table_names = ['dev-csv2ddb-media', 'dev-csv2ddb-profile', 'dev-csv2ddb-project']
@@ -49,7 +49,7 @@ def dict_to_dynamodb(items, table_name):
 
     with db.batch_writer() as batch:
         for item in items:
-            print(item)
+            #print(item)
             batch.put_item(Item=item)
 
     return print(table_name + " has been loaded.")
