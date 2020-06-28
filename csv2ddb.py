@@ -34,7 +34,7 @@ def table(table_name, primary_key, primary_key_type, sort_key, sort_key_type):
             AttributeDefinitions=[
                 {
                     'AttributeName': primary_key,
-                    'AttributeType': primary_key_type # update to arg
+                    'AttributeType': primary_key_type
                 },
                 {
                     'AttributeName': sort_key,
@@ -46,10 +46,9 @@ def table(table_name, primary_key, primary_key_type, sort_key, sort_key_type):
                 'WriteCapacityUnits': 5
             }
         )
-        print("Created table: " + table_name)
+        click.echo("Created table: " + table_name)
     else:
-        print("Table " + table_name + " already exists.")
-
+        click.echo(f"Table {table_name} already exists.")
 
 @cli.command()
 @click.argument("files", nargs=-1) # type=click.File("rb"), nargs=-1
@@ -60,10 +59,10 @@ def load(files, table_name):
     def csv_to_dict(filename):
         items = []
         with open(filename) as csvfile:
-            print("Opening " + filename + "...")
+            click.echo(f"Opening {filename}")
             reader = csv.DictReader(csvfile)
             index = reader.fieldnames
-            print("Columns: ", index)
+            click.echo(f"Columns: {index}")
             for row in reader:
                 data = {}
                 # Change User to integer type
@@ -84,12 +83,12 @@ def load(files, table_name):
     def dict_to_dynamodb(items, table_name):
         
         session = boto3.Session()
-        print("Created session...")
+        click.echo("Created session...")
 
         dynamodb = session.resource('dynamodb')
         db = dynamodb.Table(table_name)
-        print("Loading " + table_name + "...")
-        print(db.key_schema)
+        click.echo((f"Loading {table_name}")
+        click.echo((db.key_schema)
 
         try:
             with db.batch_writer() as batch:
