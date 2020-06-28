@@ -11,20 +11,43 @@ Command line tool for easy loading of CSV files directly into AWS DynamoDB.
 
 ## Getting Started
 
-Be sure to configure your AWS client:
-```
-aws configure
-```
-Install `csv2ddb`:
+1. Be sure to configure your AWS client:
+   ```
+   aws configure
+   ```
+2. Clone the repo:
+   ```
+   cd <projects folder>
+   git clone https://github.com/gclindsey/csv2ddb
+   ```
 
-```
-pip install csv2ddb
-csv2ddb --help
-```
+3. Install `csv2ddb`:
+   ```
+   pip install csv2ddb
+   csv2ddb --help
+   ```
 
 ### Prerequisites
 
 Requires Python 3, Boto3 and the AWS CLI client.
+
+<!-- ROADMAP -->
+## Roadmap
+
+See the [open issues](https://github.com/gclindsey/csv2ddb/issues) for a list of proposed features (and known issues).
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## Authors
 
