@@ -4,17 +4,22 @@ import csv
 
 @click.group()
 def cli():
-    """Load csv files directly into AWS DynamoDB."""
+    """
+    Load CSV files directly into AWS DynamoDB.
+    
+    Configure awscli for best results.
+    """
     pass
 
 @cli.command()
 @click.option("--table-name", required=True, type=click.STRING, help="Name of DynamoDB table")
-@click.option("--primary-key", required=True, type=click.STRING, help="Primary key")
-@click.option("--primary-key-type", default='S', show_default=True, 
+@click.option("--partition-key", required=True, type=click.STRING, help="Partition key")
+@click.option("--partition-key-type", default='S', show_default=True, 
                                     type=click.STRING, help="S or N")
-@click.option("--sort-key", required=True, type=click.STRING, help="Sort key")
-@click.option("--sort-key-type", required=True, type=click.STRING, help="S or N")
-def table(table_name, primary_key, primary_key_type, sort_key, sort_key_type): 
+@click.option("--sort-key", required=True, type=click.STRING, help="Sort key") # make sort key optional
+@click.option("--sort-key-type", default='S', required=True, type=click.STRING, help="S or N") # make sort key optional
+def table(table_name, partition_key, partition_key_type, sort_key, sort_key_type): 
+    """Create a DynamoDB table."""
 
     dynamodb_client = boto3.client('dynamodb')
     existing_tables = dynamodb_client.list_tables()['TableNames']
@@ -25,7 +30,7 @@ def table(table_name, primary_key, primary_key_type, sort_key, sort_key_type):
             TableName=table_name,
             KeySchema=[
                 {
-                    'AttributeName': primary_key,
+                    'AttributeName': partition_key,
                     'KeyType': 'HASH'
                 },
                 {
@@ -35,8 +40,8 @@ def table(table_name, primary_key, primary_key_type, sort_key, sort_key_type):
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': primary_key,
-                    'AttributeType': primary_key_type
+                    'AttributeName': partition_key,
+                    'AttributeType': partition_key_type
                 },
                 {
                     'AttributeName': sort_key,
@@ -44,8 +49,8 @@ def table(table_name, primary_key, primary_key_type, sort_key, sort_key_type):
                 }
             ],
             ProvisionedThroughput={
-                'ReadCapacityUnits': 5,
-                'WriteCapacityUnits': 5
+                'ReadCapacityUnits': 5, # make parameter
+                'WriteCapacityUnits': 5 # make parameter
             }
         )
         click.echo("Created table: " + table_name)
@@ -53,9 +58,11 @@ def table(table_name, primary_key, primary_key_type, sort_key, sort_key_type):
         click.echo(f"Table {table_name} already exists.")
 
 @cli.command()
-@click.argument("files", nargs=-1, help="Path to csv files") # type=click.File("rb"), nargs=-1
+@click.argument("files", nargs=-1) # type=click.File("rb"), nargs=-1
 @click.option("--table-name", required=True, type=click.STRING, help="Name of DynamoDB table")
-def load(files, table_name):
+@click.option("--sort-key", required=True, type=click.STRING, help="Sort key")
+def load(files, table_name, sort_key):
+    """Load a DynamoDB table."""
     click.echo(files)
 
     def csv_to_dict(filename):
@@ -70,8 +77,8 @@ def load(files, table_name):
                 # Change User to integer type
                 for col in index:
                     data[col] = row[col]
-                    # if col == 'User':
-                    #     data[col] = int(data[col])
+                    if col == sort_key:
+                        data[col] = int(data[col])
                 items.append(data)
 
         # Replace empty string values with None type
@@ -89,8 +96,8 @@ def load(files, table_name):
 
         dynamodb = session.resource('dynamodb')
         db = dynamodb.Table(table_name)
-        click.echo((f"Loading {table_name}")
-        click.echo((db.key_schema)
+        click.echo(f"Loading {table_name}...")
+        click.echo(db.key_schema)
 
         try:
             with db.batch_writer() as batch:
