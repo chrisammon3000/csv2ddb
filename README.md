@@ -34,7 +34,7 @@ Requires Python 3, Boto3 and the AWS CLI client.
 ## Usage
 To create a new DyanamDB table:
    ```
-   csv2ddb create --table-name my-cool-table --partition-key userId --partition-key-type S
+   csv2ddb create --table-name my-cool-table --partition-key userId --partition-key-type N
    ```
 
 To load the table:

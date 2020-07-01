@@ -40,7 +40,6 @@ def table(table_name, partition_key, partition_key_type, sort_key, sort_key_type
             key_schema.append({'AttributeName': sort_key,'KeyType': 'RANGE'})
             attribute_defs.append({'AttributeName': sort_key,'AttributeType': sort_key_type})
         
-        # contains parameters: TableName, KeySchema, AttributeDefinitions, ProvisionedThroughput
         response = dynamodb_client.create_table(
             TableName=table_name,
             KeySchema=key_schema,
@@ -52,50 +51,42 @@ def table(table_name, partition_key, partition_key_type, sort_key, sort_key_type
         )
         
         if response['TableDescription']['TableStatus'] == 'CREATING':
-            click.echo(f"Created table: {table_name}") # Check response
-            click.echo(key_schema)
-            click.echo(attribute_defs)
+            click.echo(f'Created table: "{table_name}"') # Check response
     else:
-        click.echo(f"Table {table_name} already exists.")
+        click.echo(f'Table "{table_name}" already exists.')
 
 
 @cli.command()
 @click.argument("files", nargs=-1) # type=click.File("rb"), nargs=-1
 @click.option("--table-name", required=True, type=click.STRING, help="Name of DynamoDB table")
-# @click.option("--partition-key", required=True, type=click.STRING, help="Partition key")
-# @click.option("--partition-key-type", default='S', show_default=True, 
-#                                     type=click.STRING, help="S or N")
-# @click.option("--sort-key", type=click.STRING, help="Optional sort key") # make sort key optional
-# @click.option("--sort-key-type", default='S', show_default=True, type=click.STRING, help="S or N") # make sort key optional
 def load(files, table_name):
     """Load a DynamoDB table."""
-    click.echo(files)
+    #click.echo(files)
 
     session = boto3.Session()
-    click.echo("Created session...")
+    #click.echo("Created session...")
     dynamodb = session.resource('dynamodb')
     ddb_table = dynamodb.Table(table_name)
-    click.echo(f"Loading {table_name}...")
     
     # Get table metadata
+    click.echo(f'Getting attributes for table "{table_name}"...')
     defs = ddb_table.attribute_definitions
-    #click.echo(defs)
-    partition_key = defs[0]['AttributeName']
-    partition_key_type = defs[0]['AttributeType']
+    partition_key = defs[0]['AttributeName'] # partition key name
+    partition_key_type = defs[0]['AttributeType'] # partition key type
 
     if len(defs) > 1:
-        sort_key = defs[1]['AttributeName']
-        sort_key_type = defs[1]['AttributeType']
+        sort_key = defs[1]['AttributeName'] # sort key name
+        sort_key_type = defs[1]['AttributeType'] # sort key type
     else:
         sort_key = None
 
     def csv_to_dict(filename):
         items = []
+        click.echo("Reading file...")
         with open(filename) as csvfile:
-            click.echo(f"Opening {filename}")
             reader = csv.DictReader(csvfile)
             index = reader.fieldnames
-            click.echo(f"Columns: {index}")
+            #click.echo(f"Columns: {index}")
             for row in reader:
                 data = {}
                 for col in index:
@@ -116,15 +107,14 @@ def load(files, table_name):
         return items
 
     def dict_to_dynamodb(items, table_name):
-        
-        
-        #click.echo(db.key_schema)
+
+        click.echo(f'Loading "{table_name}"...')
 
         try:
             with ddb_table.batch_writer() as batch:
                 for item in items:
                     batch.put_item(Item=item)
-            click.echo(f"{table_name} has been loaded.")
+            click.echo(f'"{table_name}" has been loaded.')
         except Exception as e:
             click.echo(f"Error: {e}")
 
