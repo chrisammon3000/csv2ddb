@@ -1,10 +1,9 @@
+.DS_Store
 credentials.json
 myKeys.csv
 data/
-
-.DS_Store
-
 venv/
 *.egg-info
 __pycache__/
 src/
+notebooks/

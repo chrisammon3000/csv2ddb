@@ -11,7 +11,12 @@ def cli():
     """
     pass
 
-@cli.command()
+@cli.command(name="list")
+def list_tables():
+    dynamodb_client = boto3.client('dynamodb')
+    click.echo(dynamodb_client.list_tables()['TableNames'])
+
+@cli.command(name="create")
 @click.option("--table-name", required=True, type=click.STRING, help="Name of DynamoDB table")
 @click.option("--partition-key", required=True, type=click.STRING, help="Partition key")
 @click.option("--partition-key-type", default='S', show_default=True, 
@@ -25,6 +30,8 @@ def table(table_name, partition_key, partition_key_type, sort_key, sort_key_type
     existing_tables = dynamodb_client.list_tables()['TableNames']
 
     if table_name not in existing_tables:
+
+        #key_schema
 
         response = dynamodb_client.create_table(
             TableName=table_name,
@@ -77,7 +84,7 @@ def load(files, table_name, sort_key):
                 # Change User to integer type
                 for col in index:
                     data[col] = row[col]
-                    if col == sort_key:
+                    if col == sort_key: # && sort_key_type == "N"
                         data[col] = int(data[col])
                 items.append(data)
 
