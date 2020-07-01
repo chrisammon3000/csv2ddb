@@ -39,7 +39,7 @@ To create a new DyanamDB table:
 
 To load the table:
    ```
-   csv2ddb load --table-name my-cool-table ./data/profile.csv
+   csv2ddb load --table-name my-cool-table ./data/my_cool_table.csv
    ```
 
 

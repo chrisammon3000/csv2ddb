@@ -62,11 +62,32 @@ def table(table_name, partition_key, partition_key_type, sort_key, sort_key_type
 @cli.command()
 @click.argument("files", nargs=-1) # type=click.File("rb"), nargs=-1
 @click.option("--table-name", required=True, type=click.STRING, help="Name of DynamoDB table")
-@click.option("--sort-key", type=click.STRING, help="Sort key")
-@click.option("--sort-key-type", default='S', show_default=True, type=click.STRING, help="S or N") # make sort key optional
-def load(files, table_name, sort_key, sort_key_type):
+# @click.option("--partition-key", required=True, type=click.STRING, help="Partition key")
+# @click.option("--partition-key-type", default='S', show_default=True, 
+#                                     type=click.STRING, help="S or N")
+# @click.option("--sort-key", type=click.STRING, help="Optional sort key") # make sort key optional
+# @click.option("--sort-key-type", default='S', show_default=True, type=click.STRING, help="S or N") # make sort key optional
+def load(files, table_name):
     """Load a DynamoDB table."""
     click.echo(files)
+
+    session = boto3.Session()
+    click.echo("Created session...")
+    dynamodb = session.resource('dynamodb')
+    ddb_table = dynamodb.Table(table_name)
+    click.echo(f"Loading {table_name}...")
+    
+    # Get table metadata
+    defs = ddb_table.attribute_definitions
+    #click.echo(defs)
+    partition_key = defs[0]['AttributeName']
+    partition_key_type = defs[0]['AttributeType']
+
+    if len(defs) > 1:
+        sort_key = defs[1]['AttributeName']
+        sort_key_type = defs[1]['AttributeType']
+    else:
+        sort_key = None
 
     def csv_to_dict(filename):
         items = []
@@ -77,10 +98,11 @@ def load(files, table_name, sort_key, sort_key_type):
             click.echo(f"Columns: {index}")
             for row in reader:
                 data = {}
-                
-                # Check for numeric sort key type
                 for col in index:
                     data[col] = row[col]
+                    # Check for numeric key types
+                    if col == partition_key and partition_key_type == "N":
+                        data[col] = int(data[col])
                     if col == sort_key and sort_key_type == "N":
                         data[col] = int(data[col])
                 items.append(data)
@@ -95,16 +117,11 @@ def load(files, table_name, sort_key, sort_key_type):
 
     def dict_to_dynamodb(items, table_name):
         
-        session = boto3.Session()
-        click.echo("Created session...")
-
-        dynamodb = session.resource('dynamodb')
-        db = dynamodb.Table(table_name)
-        click.echo(f"Loading {table_name}...")
-        click.echo(db.key_schema)
+        
+        #click.echo(db.key_schema)
 
         try:
-            with db.batch_writer() as batch:
+            with ddb_table.batch_writer() as batch:
                 for item in items:
                     batch.put_item(Item=item)
             click.echo(f"{table_name} has been loaded.")
