@@ -1,7 +1,17 @@
 .DS_Store
+<<<<<<< HEAD
+=======
+credentials.json
+myKeys.csv
+data/
+>>>>>>> csv2ddb-cli
 venv/
 *.egg-info
 __pycache__/
 src/
+<<<<<<< HEAD
 data/
 notebooks/
+=======
+notebooks/
+>>>>>>> csv2ddb-cli
