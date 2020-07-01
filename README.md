@@ -31,6 +31,18 @@ Command line tool for easy loading of CSV files directly into AWS DynamoDB.
 
 Requires Python 3, Boto3 and the AWS CLI client.
 
+## Usage
+To create a new DyanamDB table:
+   ```
+   csv2ddb create --table-name my-cool-table --partition-key userId --partition-key-type S
+   ```
+
+To load the table:
+   ```
+   csv2ddb load --table-name my-cool-table ./data/profile.csv
+   ```
+
+
 <!-- ROADMAP -->
 ## Roadmap
 
