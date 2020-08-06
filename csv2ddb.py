@@ -20,11 +20,13 @@ def list_tables():
 @cli.command(name="create")
 @click.option("--table-name", required=True, type=click.STRING, help="Name of DynamoDB table")
 @click.option("--partition-key", required=True, type=click.STRING, help="Partition key")
-@click.option("--partition-key-type", default='S', show_default=True, 
-                                    type=click.STRING, help="S or N")
-@click.option("--sort-key", type=click.STRING, help="Optional sort key") # make sort key optional
-@click.option("--sort-key-type", default='S', show_default=True, type=click.STRING, help="S or N") # make sort key optional
-def table(table_name, partition_key, partition_key_type, sort_key, sort_key_type): 
+@click.option("--partition-key-type", default='S', required=True, show_default=True, 
+                                    type=click.STRING, help="S (string) or N (numeric)")
+@click.option("--sort-key", type=click.STRING, help="Sort key")
+@click.option("--sort-key-type", default='S', show_default=True, type=click.STRING, help="S (string) or N (numeric)")
+@click.option("--read-units", default=5, type=click.INT, show_default=True, help="ReadCapacityUnits")
+@click.option("--write-units", default=5, type=click.INT, show_default=True, help="WriteCapacityUnits")
+def table(table_name, partition_key, partition_key_type, sort_key, sort_key_type, read_units, write_units): 
     """Create a DynamoDB table."""
 
     dynamodb_client = boto3.client('dynamodb')
@@ -45,13 +47,13 @@ def table(table_name, partition_key, partition_key_type, sort_key, sort_key_type
             KeySchema=key_schema,
             AttributeDefinitions=attribute_defs,
             ProvisionedThroughput={
-                'ReadCapacityUnits': 5, # make parameter
-                'WriteCapacityUnits': 5 # make parameter
+                'ReadCapacityUnits': read_units, 
+                'WriteCapacityUnits': write_units
             }
         )
         
         if response['TableDescription']['TableStatus'] == 'CREATING':
-            click.echo(f'Created table: "{table_name}"') # Check response
+            click.echo(click.style(f'Created table: "{table_name}"', bg='white', fg='black'))
     else:
         click.echo(f'Table "{table_name}" already exists.')
 
@@ -60,7 +62,7 @@ def table(table_name, partition_key, partition_key_type, sort_key, sort_key_type
 @click.argument("files", nargs=-1) # type=click.File("rb"), nargs=-1
 @click.option("--table-name", required=True, type=click.STRING, help="Name of DynamoDB table")
 def load(files, table_name):
-    """Load a DynamoDB table."""
+    """Load a DynamoDB table from a CSV with headers."""
     #click.echo(files)
 
     session = boto3.Session()
@@ -114,7 +116,7 @@ def load(files, table_name):
             with ddb_table.batch_writer() as batch:
                 for item in items:
                     batch.put_item(Item=item)
-            click.echo(f'"{table_name}" has been loaded.')
+            click.echo(click.style(f'"{table_name}" has been loaded.', bg='white', fg='black'))
         except Exception as e:
             click.echo(f"Error: {e}")
 
